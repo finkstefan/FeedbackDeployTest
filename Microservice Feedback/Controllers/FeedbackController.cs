@@ -34,7 +34,7 @@ namespace Microservice_Feedback.Controllers
         /// </summary>
         /// <returns>List of feedbacks</returns>
         /// <response code="200">Returns list of feedbacks</response>
-        /// <response code="404">Neither feedback has been found</response>
+        /// <response code="204">Nothing to return</response>
         [HttpGet]  
         [ProducesResponseType(StatusCodes.Status200OK)] 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -51,11 +51,33 @@ namespace Microservice_Feedback.Controllers
         }
 
         /// <summary>
+        /// Returns one feedbacks from database.
+        /// </summary>
+        /// <returns>Feedback</returns>
+        /// <response code="200">Returns one feedback</response>
+        /// <response code="404">Neither feedback has been found</response>
+        [HttpGet("{feedbackId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<FeedbackDTO> GetFeedback(Guid feedbackId)
+        {
+            Feedback feedback = feedbackRepository.GetFeedbackById(feedbackId);
+
+            if (feedback == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(mapper.Map<FeedbackDTO>(feedback));
+        }
+
+
+        /// <summary>
         /// Adds feedback
         /// </summary>
         /// <returns>Adding new feedback</returns>
         /// <response code="200">Creates new feedback</response>
-        /// <response code="404">Error in creationg new feedback</response>
+        /// <response code="505">Error in creating new feedback</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -76,5 +98,73 @@ namespace Microservice_Feedback.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Create Error");
             }
         }
+
+        /// <summary>
+        /// Updates feedback
+        /// </summary>
+        /// <returns>Updating a feedback</returns>
+        /// <response code="200">Updates feedback</response>
+        /// <response code="404">Neither feedback has been found</response>
+        /// <response code="500">Error in updating new feedback</response>
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<FeedbackDTO> UpdateFeedback([FromBody] Feedback feedback)
+        {
+            try
+            {
+                Feedback oldFeedback = feedbackRepository.GetFeedbackById(feedback.FeedbackId);
+                if (oldFeedback == null)
+                {
+                    return NotFound();
+                }
+
+                oldFeedback.FeedbackCategoryId = feedback.FeedbackCategoryId;
+                oldFeedback.ObjectStoreCheckId = feedback.ObjectStoreCheckId;
+                oldFeedback.Text = feedback.Text;
+                oldFeedback.Date = feedback.Date;
+                oldFeedback.Resolved = feedback.Resolved;
+
+                feedbackRepository.SaveChanges();
+
+                return Ok(mapper.Map<FeedbackDTO>(oldFeedback));
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Update Error");
+            }
+        }
+
+        /// <summary>
+        /// Deletes feedback
+        /// </summary>
+        /// <returns>Adding new feedback</returns>
+        /// <response code="200">Deletes feedback</response>
+        /// <response code="404">Neither feedback has been found</response>
+        /// <response code="500">Error in deleting feedback</response>
+        [HttpDelete("{feedbackId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult DeleteFeedback(Guid feedbackId)
+        {
+            try
+            {
+                Feedback feedback = feedbackRepository.GetFeedbackById(feedbackId);
+                if (feedback == null)
+                {
+                    return NotFound();
+                }
+                feedbackRepository.DeleteFeedback(feedbackId);
+                feedbackRepository.SaveChanges();
+                return NoContent();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Delete Error");
+            }
+        }
+        
     }
 }

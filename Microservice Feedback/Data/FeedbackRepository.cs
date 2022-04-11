@@ -27,12 +27,12 @@ namespace Microservice_Feedback.Data
 
         public void DeleteFeedback(Guid feedbackId)
         {
-            throw new NotImplementedException();
+            context.Feedbacks.Remove(context.Feedbacks.FirstOrDefault(p => p.FeedbackId == feedbackId));
         }
 
         public Feedback GetFeedbackById(Guid feedbackId)
         {
-            throw new NotImplementedException();
+            return context.Feedbacks.FirstOrDefault(p => p.FeedbackId == feedbackId);
         }
 
         public List<Feedback> GetFeedbacks()
@@ -47,7 +47,7 @@ namespace Microservice_Feedback.Data
 
         public void UpdateFeedback(Feedback feedback)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

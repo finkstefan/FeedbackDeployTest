@@ -35,6 +35,7 @@ namespace Microservice_Feedback
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Microservice_Feedback", Version = "v1" });
             });
+            services.AddScoped<IFeedbackCategoryRepository, FeedbackCategoryRepository>();
 
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 
