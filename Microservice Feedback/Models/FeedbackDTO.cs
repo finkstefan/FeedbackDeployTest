@@ -10,41 +10,27 @@ namespace Microservice_Feedback.Models
         /// <summary>
         /// Feedback category ID
         /// </summary>
-        public Guid FeedbackCategoryID;
+        public Guid FeedbackCategoryID { get; set; }
 
         /// <summary>
         /// Object storecheck ID
         /// </summary>
-        public Guid ObjectStoreCheckID;
+        public Guid ObjectStoreCheckID { get; set; }
 
         /// <summary>
         /// Feedback text
         /// </summary>
-        public string FeedbackText;
+        public string Text { get; set; }
 
         /// <summary>
         /// Feedback creation date
         /// </summary>
-        public DateTime FeedbackCreationDate;
+        public DateTime Date { get; set; }
 
         /// <summary>
         /// Is feedback resolved
         /// </summary>
-        public bool Resolved;
+        public bool Resolved { get; set; }
 
-        /// <summary>
-        /// Is feedback response
-        /// </summary>
-        public bool Response;
-
-        /// <summary>
-        /// Feedback due date
-        /// </summary>
-        public DateTime FeedbackDueDate;
-
-        /// <summary>
-        /// Good practice for feedback
-        /// </summary>
-        public string GoodPractice;
     }
 }

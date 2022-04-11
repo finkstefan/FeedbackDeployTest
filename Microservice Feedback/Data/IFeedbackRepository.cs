@@ -12,7 +12,7 @@ namespace Microservice_Feedback.Data
 
         Feedback GetFeedbackById(Guid feedbackId);
 
-        FeedbackConfirmation CreateFeedback(Feedback feedback);
+        Feedback CreateFeedback(Feedback feedback);
 
         void UpdateFeedback(Feedback feedback);
 

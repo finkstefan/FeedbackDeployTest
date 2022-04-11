@@ -9,18 +9,20 @@ namespace Microservice_Feedback.Data
 {
     public class FeedbackRepository : IFeedbackRepository
     {
-        private readonly FeedbackContext context;
+        private readonly StoreCheckFeedbackContext context;
         private readonly IMapper mapper;
 
-        public FeedbackRepository(FeedbackContext context, IMapper mapper)
+        public FeedbackRepository(StoreCheckFeedbackContext context, IMapper mapper)
         {
             this.context = context;
             this.mapper = mapper;
         }
 
-        public FeedbackConfirmation CreateFeedback(Feedback feedback)
+        public Feedback CreateFeedback(Feedback feedback)
         {
-            throw new NotImplementedException();
+            feedback.FeedbackId = Guid.NewGuid();
+            context.Feedbacks.Add(feedback);
+            return feedback;
         }
 
         public void DeleteFeedback(Guid feedbackId)
@@ -40,7 +42,7 @@ namespace Microservice_Feedback.Data
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+            return context.SaveChanges() > 0;
         }
 
         public void UpdateFeedback(Feedback feedback)

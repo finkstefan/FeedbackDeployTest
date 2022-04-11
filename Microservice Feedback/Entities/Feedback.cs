@@ -1,58 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+
+#nullable disable
 
 namespace Microservice_Feedback.Entities
 {
-    /// <summary>
-    /// Feedback on storecheck
-    /// </summary>
-    public class Feedback
+    [Table("Feedback")]
+    public partial class Feedback
     {
-        /// <summary>
-        /// Feedback ID
-        /// </summary>
-        public Guid FeedbackID;
+        [Key]
+        public Guid FeedbackId { get; set; }
+        public Guid FeedbackCategoryId { get; set; }
+        public Guid ObjectStoreCheckId { get; set; }
+        [Required]
+        [StringLength(255)]
+        public string Text { get; set; }
+        [Column(TypeName = "date")]
+        public DateTime Date { get; set; }
+        public bool Resolved { get; set; }
 
-        /// <summary>
-        /// Feedback category ID
-        /// </summary>
-        public Guid FeedbackCategoryID;
-
-        /// <summary>
-        /// Object storecheck ID
-        /// </summary>
-        public Guid ObjectStoreCheckID;
-
-        /// <summary>
-        /// Feedback text
-        /// </summary>
-        public string FeedbackText;
-
-        /// <summary>
-        /// Feedback creation date
-        /// </summary>
-        public DateTime FeedbackCreationDate;
-
-        /// <summary>
-        /// Is feedback resolved
-        /// </summary>
-        public bool Resolved;
-
-        /// <summary>
-        /// Is feedback response
-        /// </summary>
-        public bool Response;
-
-        /// <summary>
-        /// Feedback due date
-        /// </summary>
-        public DateTime FeedbackDueDate;
-
-        /// <summary>
-        /// Good practice for feedback
-        /// </summary>
-        public string GoodPractice; 
+        [ForeignKey(nameof(FeedbackCategoryId))]
+        [InverseProperty("Feedbacks")]
+        public virtual FeedbackCategory FeedbackCategory { get; set; }
     }
 }

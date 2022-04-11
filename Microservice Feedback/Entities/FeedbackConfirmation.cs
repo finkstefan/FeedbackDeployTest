@@ -23,31 +23,19 @@ namespace Microservice_Feedback.Entities
         /// <summary>
         /// Feedback text
         /// </summary>
-        public string FeedbackText;
+        public string Text;
 
         /// <summary>
         /// Feedback creation date
         /// </summary>
-        public DateTime FeedbackCreationDate;
+        public DateTime Date;
 
         /// <summary>
         /// Is feedback resolved
         /// </summary>
         public bool Resolved;
 
-        /// <summary>
-        /// Is feedback response
-        /// </summary>
-        public bool Response;
+   
 
-        /// <summary>
-        /// Feedback due date
-        /// </summary>
-        public DateTime FeedbackDueDate;
-
-        /// <summary>
-        /// Good practice for feedback
-        /// </summary>
-        public string GoodPractice;
     }
 }

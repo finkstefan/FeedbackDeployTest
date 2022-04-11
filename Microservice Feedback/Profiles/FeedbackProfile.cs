@@ -13,6 +13,7 @@ namespace Microservice_Feedback.Profiles
         public FeedbackProfile()
         {
             CreateMap<Feedback, FeedbackDTO>();
+            CreateMap<FeedbackDTO, Feedback>();
         }
     }
 }

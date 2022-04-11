@@ -1,23 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+
+#nullable disable
 
 namespace Microservice_Feedback.Entities
 {
-    /// <summary>
-    /// Category of feedback
-    /// </summary>
-    public class FeedbackCategory
+    [Table("FeedbackCategory")]
+    public partial class FeedbackCategory
     {
-        /// <summary>
-        /// Feedback category ID
-        /// </summary>
-        public Guid FeedbackCategoryID;
+        public FeedbackCategory()
+        {
+            Feedbacks = new HashSet<Feedback>();
+        }
 
-        /// <summary>
-        /// Feedback category name
-        /// </summary>
-        public string FeedbackCategoryName;
+        [Key]
+        public Guid FeedbackCategoryId { get; set; }
+        [StringLength(50)]
+        public string FeedbackCategoryName { get; set; }
+
+        [InverseProperty(nameof(Feedback.FeedbackCategory))]
+        public virtual ICollection<Feedback> Feedbacks { get; set; }
     }
 }
