@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 
 #nullable disable
 
@@ -18,12 +20,15 @@ namespace Microservice_Feedback.Entities
         public virtual DbSet<Feedback> Feedbacks { get; set; }
         public virtual DbSet<FeedbackCategory> FeedbackCategories { get; set; }
 
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            IConfiguration conf = (new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build());
+            string myValue1 = conf["ConnectionStrings:Feedback"].ToString();
+
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=ASUS-CHRIST\\SQLEXPRESS;Initial Catalog=StoreCheckFeedback;Integrated Security=True;");
+                optionsBuilder.UseSqlServer(myValue1);
             }
         }
 
