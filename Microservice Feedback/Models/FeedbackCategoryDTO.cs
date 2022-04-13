@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Microservice_Feedback.Models
 {
+    /// <summary>
+    /// Dto for category of a feedback
+    /// </summary>
     public class FeedbackCategoryDTO
     {
 

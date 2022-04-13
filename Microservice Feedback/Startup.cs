@@ -1,5 +1,6 @@
 using Microservice_Feedback.Data;
 using Microservice_Feedback.Entities;
+using Microservice_Feedback.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -38,6 +39,8 @@ namespace Microservice_Feedback
             services.AddScoped<IFeedbackCategoryRepository, FeedbackCategoryRepository>();
 
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+
+            services.AddScoped<ILoggerService, LoggerService>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
