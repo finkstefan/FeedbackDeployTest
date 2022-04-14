@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace Microservice_Feedback.Controllers
 {
     [ApiController]
-    [Route("api/feedbackCategory")]
+    [Route("api/feedbackCategories")]
     [Produces("application/json", "application/xml")]
     public class FeedbackCategoryController : ControllerBase
     {
