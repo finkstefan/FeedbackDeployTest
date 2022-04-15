@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 namespace Microservice_Feedback.Models
 {
     /// <summary>
-    /// Dto for a feedback
+    /// Dto for a feedback  
     /// </summary>
     public class FeedbackDTO
     {
         /// <summary>
         /// Feedback category ID
         /// </summary>
-        public Guid FeedbackCategoryID { get; set; }
+        public string FeedbackCategory { get; set; }
 
         /// <summary>
         /// Object storecheck ID
@@ -36,9 +36,5 @@ namespace Microservice_Feedback.Models
         /// </summary>
         public bool Resolved { get; set; }
 
-        /// <summary>
-        /// Feedback category
-        /// </summary>
-        public FeedbackCategoryDTO FeedbackCategory { get; set; }
     }
 }

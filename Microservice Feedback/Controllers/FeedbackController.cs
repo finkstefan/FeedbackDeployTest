@@ -62,10 +62,20 @@ namespace Microservice_Feedback.Controllers
                     loggerService.CreateLog(logDto);
                     return NoContent();
                 }
+                List<FeedbackDTO> feedbacksDTO = new List<FeedbackDTO>();
+                foreach (Feedback feed in feedbacks)
+                {
+                    FeedbackDTO feedbackDTO = mapper.Map<FeedbackDTO>(feed);
+                    feedbackDTO.FeedbackCategory =feedbackCategoryRepository.GetFeedbackCategoryById(feed.FeedbackCategoryId).FeedbackCategoryName;
+
+                    feedbacksDTO.Add(feedbackDTO);
+                }
+ 
+
 
                 logDto.Level = "Info";
                 loggerService.CreateLog(logDto);
-                return Ok(mapper.Map<List<FeedbackDTO>>(feedbacks));
+                return Ok(mapper.Map<List<FeedbackDTO>>(feedbacksDTO));
             }
 
              catch
@@ -105,7 +115,7 @@ namespace Microservice_Feedback.Controllers
 
                 FeedbackDTO feedbackDTO = mapper.Map<FeedbackDTO>(feedback);
 
-                feedbackDTO.FeedbackCategory = mapper.Map<FeedbackCategoryDTO>(feedbackCategory);
+                feedbackDTO.FeedbackCategory =feedbackCategory.FeedbackCategoryName;
 
                 logDto.Level = "Info";
                 loggerService.CreateLog(logDto);
@@ -235,6 +245,56 @@ namespace Microservice_Feedback.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Delete Error");
             }
         }
-        
+
+        /// <summary>
+        /// Returns all feedbacks by its categories id from database.
+        /// </summary>
+        /// <returns>List of feedbacks</returns>
+        /// <response code="200">Returns list of feedbacks</response>
+        /// <response code="204">Nothing to return</response>
+        /// <response code="505">Error in getting feedbacks</response>
+        [HttpGet("feedbackByCategoryName/{feedbackCategoryName}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<List<FeedbackDTO>> GetFeedbacksByCategory(string feedbackCategoryName)
+        {
+            try
+            {
+                logDto.HttpMethod = "GET";
+                logDto.Message = "Return all feedbacks by category";
+                var feedbacks = feedbackRepository.GetFeedbacksByCategoryName(feedbackCategoryName);
+
+                if (feedbacks == null || feedbacks.Count == 0)
+                {
+                    logDto.Level = "Warn";
+                    loggerService.CreateLog(logDto);
+                    return NoContent();
+                }
+                List<FeedbackDTO> feedbacksDTO = new List<FeedbackDTO>();
+                foreach (Feedback feed in feedbacks)
+                {
+                    FeedbackDTO feedbackDTO = mapper.Map<FeedbackDTO>(feed);
+                    feedbackDTO.FeedbackCategory = feedbackCategoryRepository.GetFeedbackCategoryById(feed.FeedbackCategoryId).FeedbackCategoryName;
+
+                    feedbacksDTO.Add(feedbackDTO);
+                }
+
+                logDto.Level = "Info";
+                loggerService.CreateLog(logDto);
+                return Ok(mapper.Map<List<FeedbackDTO>>(feedbacksDTO));
+            }
+
+            catch
+            {
+                logDto.Level = "Error";
+                loggerService.CreateLog(logDto);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Get all Error");
+            }
+        }
+
+
+
+
     }
 }

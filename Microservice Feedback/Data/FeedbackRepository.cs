@@ -40,6 +40,7 @@ namespace Microservice_Feedback.Data
             return context.Feedbacks.ToList();
         }
 
+        
         public bool SaveChanges()
         {
             return context.SaveChanges() > 0;
@@ -47,7 +48,15 @@ namespace Microservice_Feedback.Data
 
         public void UpdateFeedback(Feedback feedback)
         {
-            
+
         }
+
+        public List<Feedback> GetFeedbacksByCategoryName(string categoryName)
+          {
+              var category=context.FeedbackCategories.FirstOrDefault(f => f.FeedbackCategoryName== categoryName);
+              return (from f in context.Feedbacks where f.FeedbackCategoryId == category.FeedbackCategoryId select f).ToList();
+          }
+
+
     }
 }

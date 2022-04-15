@@ -19,5 +19,9 @@ namespace Microservice_Feedback.Data
         void DeleteFeedback(Guid feedbackId);
 
         bool SaveChanges();
+
+        List<Feedback> GetFeedbacksByCategoryName(string categoryName);
+
+
     }
 }
