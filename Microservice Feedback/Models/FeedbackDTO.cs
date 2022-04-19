@@ -19,7 +19,7 @@ namespace Microservice_Feedback.Models
         /// <summary>
         /// Object storecheck ID
         /// </summary>
-        public Guid ObjectStoreCheckID { get; set; }
+        public Guid ObjectStoreCheckId { get; set; }
 
         /// <summary>
         /// Feedback text

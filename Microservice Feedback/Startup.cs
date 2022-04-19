@@ -42,6 +42,8 @@ namespace Microservice_Feedback
 
             services.AddScoped<ILoggerService, LoggerService>();
 
+            services.AddScoped<IObjectStoreCheckService, ObjectStoreCheckService>();
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddDbContextPool<StoreCheckFeedbackContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Feedback")));

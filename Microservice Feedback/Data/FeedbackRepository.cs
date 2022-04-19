@@ -11,6 +11,7 @@ namespace Microservice_Feedback.Data
     {
         private readonly StoreCheckFeedbackContext context;
         private readonly IMapper mapper;
+        
 
         public FeedbackRepository(StoreCheckFeedbackContext context, IMapper mapper)
         {
@@ -21,7 +22,7 @@ namespace Microservice_Feedback.Data
         public Feedback CreateFeedback(Feedback feedback)
         {
             feedback.FeedbackId = Guid.NewGuid();
-            context.Feedbacks.Add(feedback);
+           
             return feedback;
         }
 

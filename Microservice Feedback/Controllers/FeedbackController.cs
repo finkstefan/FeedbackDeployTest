@@ -24,15 +24,17 @@ namespace Microservice_Feedback.Controllers
         private readonly LinkGenerator linkgenerator;
         private readonly IFeedbackCategoryRepository feedbackCategoryRepository;
         private readonly ILoggerService loggerService;
+        private readonly IObjectStoreCheckService objectStoreCheckService;
         private readonly LogDto logDto;
 
-        public FeedbackController(IFeedbackRepository feedbackRepository, IMapper mapper, LinkGenerator linkgenerator,IFeedbackCategoryRepository feedbackCategoryRepository, ILoggerService loggerService)
+        public FeedbackController(IFeedbackRepository feedbackRepository, IMapper mapper, LinkGenerator linkgenerator,IFeedbackCategoryRepository feedbackCategoryRepository, ILoggerService loggerService, IObjectStoreCheckService objectStoreCheckService)
         {
             this.feedbackRepository = feedbackRepository;
             this.mapper = mapper;
             this.linkgenerator = linkgenerator;
             this.feedbackCategoryRepository = feedbackCategoryRepository;
             this.loggerService = loggerService;
+            this.objectStoreCheckService = objectStoreCheckService;
             logDto = new LogDto();
             logDto.NameOfTheService = "Feedback";
         }
@@ -145,7 +147,11 @@ namespace Microservice_Feedback.Controllers
             {
                 logDto.HttpMethod = "POST";
                 logDto.Message = "Create new feedback";
+
+                feedbackDTO.ObjectStoreCheckId = objectStoreCheckService.GetObjectStoreCheckIdByUsernameAsync(feedbackDTO.Username).Result;
                 Feedback feedback = mapper.Map<Feedback>(feedbackDTO);
+  
+
                 Feedback helper = feedbackRepository.CreateFeedback(feedback);
                 feedbackDTO = mapper.Map<FeedbackDTO>(helper);
                 feedbackRepository.SaveChanges();
