@@ -41,7 +41,11 @@ namespace Microservice_Feedback.Data
             return context.Feedbacks.ToList();
         }
 
-        
+        public List<Feedback> GetUnresolvedFeedbacks()
+        {
+            return (from f in context.Feedbacks where f.Resolved==false select f).ToList();
+        }
+
         public bool SaveChanges()
         {
             return context.SaveChanges() > 0;

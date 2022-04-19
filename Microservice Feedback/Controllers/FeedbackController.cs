@@ -347,6 +347,56 @@ namespace Microservice_Feedback.Controllers
             }
         }
 
+        /// <summary>
+        /// Returns all feedbacks from database.
+        /// </summary>
+        /// <returns>List of feedbacks</returns>
+        /// <response code="200">Returns list of feedbacks</response>
+        /// <response code="204">Nothing to return</response>
+        /// <response code="505">Error in getting all feedbacks</response>
+        [HttpGet("unresolved")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<List<FeedbackFrontDTO>> GetUnresolvedFeedbacks()
+        {
+            try
+            {
+                logDto.HttpMethod = "GET";
+                logDto.Message = "Return all feedbacks";
+                var feedbacks = feedbackRepository.GetUnresolvedFeedbacks();
+
+                if (feedbacks == null || feedbacks.Count == 0)
+                {
+                    logDto.Level = "Warn";
+                    loggerService.CreateLog(logDto);
+                    return NoContent();
+                }
+                List<FeedbackDTO> feedbacksDTO = new List<FeedbackDTO>();
+                foreach (Feedback feed in feedbacks)
+                {
+                    FeedbackDTO feedbackDTO = mapper.Map<FeedbackDTO>(feed);
+                    feedbackDTO.FeedbackCategory = feedbackCategoryRepository.GetFeedbackCategoryById(feed.FeedbackCategoryId).FeedbackCategoryName;
+
+                    feedbacksDTO.Add(feedbackDTO);
+                }
+
+
+
+                logDto.Level = "Info";
+                loggerService.CreateLog(logDto);
+                return Ok(mapper.Map<List<FeedbackFrontDTO>>(feedbacksDTO));
+            }
+
+            catch
+            {
+                logDto.Level = "Error";
+                loggerService.CreateLog(logDto);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Get all Error");
+            }
+        }
+
+
 
 
     }

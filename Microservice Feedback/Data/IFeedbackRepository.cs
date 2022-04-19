@@ -23,6 +23,7 @@ namespace Microservice_Feedback.Data
         List<Feedback> GetFeedbacksByCategoryName(string categoryName);
 
         List<Feedback> GetFeedbacksByObjectStoreCheckId(Guid objectStoreCheckId);
+        List<Feedback> GetUnresolvedFeedbacks();
 
 
     }
