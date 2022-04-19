@@ -36,5 +36,17 @@ namespace Microservice_Feedback.Models
         /// </summary>
         public bool Resolved { get; set; }
 
+        /// <summary>
+        /// Feedback image route
+        /// </summary>
+        public string Img { get; set; }
+
+        /// <summary>
+        /// Feedback users username
+        /// </summary>
+        public string Username { get; set; }
+
+
+
     }
 }

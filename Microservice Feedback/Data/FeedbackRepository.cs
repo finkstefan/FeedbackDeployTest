@@ -57,6 +57,10 @@ namespace Microservice_Feedback.Data
               return (from f in context.Feedbacks where f.FeedbackCategoryId == category.FeedbackCategoryId select f).ToList();
           }
 
+        public List<Feedback> GetFeedbacksByObjectStoreCheckId(Guid objectStoreCheckId)
+        {
+            return (from f in context.Feedbacks where f.ObjectStoreCheckId == objectStoreCheckId select f).ToList();
+        }
 
     }
 }

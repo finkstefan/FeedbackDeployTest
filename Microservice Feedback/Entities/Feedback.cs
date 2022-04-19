@@ -21,6 +21,11 @@ namespace Microservice_Feedback.Entities
         [Column(TypeName = "date")]
         public DateTime Date { get; set; }
         public bool Resolved { get; set; }
+        [StringLength(255)]
+        public string Img { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string Username { get; set; }
 
         [ForeignKey(nameof(FeedbackCategoryId))]
         [InverseProperty("Feedbacks")]

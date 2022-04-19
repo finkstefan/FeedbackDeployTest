@@ -1,16 +1,13 @@
 ﻿using System;
-using System.IO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
 
 #nullable disable
 
 namespace Microservice_Feedback.Entities
 {
     public partial class StoreCheckFeedbackContext : DbContext
-    {
-       
+    { 
 
         public StoreCheckFeedbackContext(DbContextOptions<StoreCheckFeedbackContext> options)
             : base(options)
@@ -20,15 +17,11 @@ namespace Microservice_Feedback.Entities
         public virtual DbSet<Feedback> Feedbacks { get; set; }
         public virtual DbSet<FeedbackCategory> FeedbackCategories { get; set; }
 
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            IConfiguration conf = (new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build());
-            string myValue1 = conf["ConnectionStrings:Feedback"].ToString();
-
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(myValue1);
+                optionsBuilder.UseSqlServer("Name=ConnectionStrings:Feedback");
             }
         }
 

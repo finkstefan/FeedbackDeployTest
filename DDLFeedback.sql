@@ -23,7 +23,9 @@ CREATE TABLE Feedback
 	ObjectStoreCheckId UNIQUEIDENTIFIER NOT NULL,
 	[Text] NVARCHAR(255) NOT NULL,
 	[Date] DATE NOT NULL,
-	Resloved BIT NOT NULL
+	Resolved BIT NOT NULL,
+	Img NVARCHAR(255) NULL,
+	Username NVARCHAR(50) NOT NULL
 
 	CONSTRAINT PK_Feedback PRIMARY KEY (FeedbackId),
 	CONSTRAINT FK_Feedback_FeedbackCategory FOREIGN KEY (FeedbackCategoryId) REFERENCES FeedbackCategory(FeedbackCategoryId) ON DELETE CASCADE,
