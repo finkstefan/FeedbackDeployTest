@@ -4,11 +4,13 @@ using Microservice_Feedback.Entities;
 using Microservice_Feedback.Models;
 using Microservice_Feedback.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,8 +28,9 @@ namespace Microservice_Feedback.Controllers
         private readonly ILoggerService loggerService;
         private readonly IObjectStoreCheckService objectStoreCheckService;
         private readonly LogDto logDto;
+        private readonly IHostingEnvironment hostingEnvironment;
 
-        public FeedbackController(IFeedbackRepository feedbackRepository, IMapper mapper, LinkGenerator linkgenerator,IFeedbackCategoryRepository feedbackCategoryRepository, ILoggerService loggerService, IObjectStoreCheckService objectStoreCheckService)
+        public FeedbackController(IFeedbackRepository feedbackRepository, IMapper mapper, LinkGenerator linkgenerator,IFeedbackCategoryRepository feedbackCategoryRepository, ILoggerService loggerService, IObjectStoreCheckService objectStoreCheckService, IHostingEnvironment hostingEnvironment)
         {
             this.feedbackRepository = feedbackRepository;
             this.mapper = mapper;
@@ -37,6 +40,7 @@ namespace Microservice_Feedback.Controllers
             this.objectStoreCheckService = objectStoreCheckService;
             logDto = new LogDto();
             logDto.NameOfTheService = "Feedback";
+            this.hostingEnvironment = hostingEnvironment;
         }
 
         /// <summary>
@@ -68,7 +72,7 @@ namespace Microservice_Feedback.Controllers
                 foreach (Feedback feed in feedbacks)
                 {
                     FeedbackDTO feedbackDTO = mapper.Map<FeedbackDTO>(feed);
-                    feedbackDTO.FeedbackCategoryName =feedbackCategoryRepository.GetFeedbackCategoryById(feed.FeedbackCategoryId).FeedbackCategoryName;
+                    feedbackDTO.FeedbackCategory =feedbackCategoryRepository.GetFeedbackCategoryById(feed.FeedbackCategoryId).FeedbackCategoryName;
 
                     feedbacksDTO.Add(feedbackDTO);
                 }
@@ -117,7 +121,7 @@ namespace Microservice_Feedback.Controllers
 
                 FeedbackDTO feedbackDTO = mapper.Map<FeedbackDTO>(feedback);
 
-                feedbackDTO.FeedbackCategoryName = feedbackCategory.FeedbackCategoryName;
+                feedbackDTO.FeedbackCategory =feedbackCategory.FeedbackCategoryName;
 
                 logDto.Level = "Info";
                 loggerService.CreateLog(logDto);
@@ -141,33 +145,37 @@ namespace Microservice_Feedback.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<FeedbackFrontDTO> CreateFeedback([FromBody] FeedbackDTO feedbackDTO)
+        public ActionResult<FeedbackDTO> CreateFeedback(IFormFile file, [FromForm] FeedbackDTO feedbackDTO)
         {
             try
             {
                 logDto.HttpMethod = "POST";
                 logDto.Message = "Create new feedback";
 
+                string images = Path.Combine(hostingEnvironment.ContentRootPath, "Images");
+                Directory.CreateDirectory(images);
+                if (file.Length > 0)
+                {
+                    string fileName = feedbackDTO.Username + DateTime.Now.ToString("yyyyMMddTHHmmss") + file.FileName;
+                    string filePath = Path.Combine(images, fileName);
+                    feedbackDTO.Img = "Images/" + fileName;
+                    using (Stream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                }
+
                 feedbackDTO.ObjectStoreCheckId = objectStoreCheckService.GetObjectStoreCheckIdByUsernameAsync(feedbackDTO.Username).Result;
-
-               
                 Feedback feedback = mapper.Map<Feedback>(feedbackDTO);
-              
-                feedback.FeedbackCategoryId = feedbackCategoryRepository.GetFeedbackCategoryByName(feedbackDTO.FeedbackCategoryName).FeedbackCategoryId;
-
+  
 
                 Feedback helper = feedbackRepository.CreateFeedback(feedback);
-               // feedbackRepository.SaveChanges();
-                
                 FeedbackFrontDTO feedbackFrontDTO = mapper.Map<FeedbackFrontDTO>(helper);
-
-                feedbackFrontDTO.FeedbackCategoryName = feedbackDTO.FeedbackCategoryName;
-
+                feedbackRepository.SaveChanges();
                 string location = linkgenerator.GetPathByAction("GetFeedbacks", "Feedback", new { feedbackId = helper.FeedbackId });
 
                 logDto.Level = "Info";
                 loggerService.CreateLog(logDto);
-
                 return Created(location, feedbackFrontDTO);
             }
             catch
@@ -290,7 +298,7 @@ namespace Microservice_Feedback.Controllers
                 foreach (Feedback feed in feedbacks)
                 {
                     FeedbackDTO feedbackDTO = mapper.Map<FeedbackDTO>(feed);
-                    feedbackDTO.FeedbackCategoryName = feedbackCategoryRepository.GetFeedbackCategoryById(feed.FeedbackCategoryId).FeedbackCategoryName;
+                    feedbackDTO.FeedbackCategory = feedbackCategoryRepository.GetFeedbackCategoryById(feed.FeedbackCategoryId).FeedbackCategoryName;
 
                     feedbacksDTO.Add(feedbackDTO);
                 }
@@ -338,7 +346,7 @@ namespace Microservice_Feedback.Controllers
                 foreach (Feedback feed in feedbacks)
                 {
                     FeedbackDTO feedbackDTO = mapper.Map<FeedbackDTO>(feed);
-                    feedbackDTO.FeedbackCategoryName = feedbackCategoryRepository.GetFeedbackCategoryById(feed.FeedbackCategoryId).FeedbackCategoryName;
+                    feedbackDTO.FeedbackCategory = feedbackCategoryRepository.GetFeedbackCategoryById(feed.FeedbackCategoryId).FeedbackCategoryName;
 
                     feedbacksDTO.Add(feedbackDTO);
                 }
@@ -385,7 +393,7 @@ namespace Microservice_Feedback.Controllers
                 foreach (Feedback feed in feedbacks)
                 {
                     FeedbackDTO feedbackDTO = mapper.Map<FeedbackDTO>(feed);
-                    feedbackDTO.FeedbackCategoryName = feedbackCategoryRepository.GetFeedbackCategoryById(feed.FeedbackCategoryId).FeedbackCategoryName;
+                    feedbackDTO.FeedbackCategory = feedbackCategoryRepository.GetFeedbackCategoryById(feed.FeedbackCategoryId).FeedbackCategoryName;
 
                     feedbacksDTO.Add(feedbackDTO);
                 }
