@@ -29,6 +29,6 @@ namespace Microservice_Feedback.Entities
 
         [ForeignKey(nameof(FeedbackCategoryId))]
         [InverseProperty("Feedbacks")]
-        public virtual FeedbackCategory FeedbackCategory { get; set; }
+        public FeedbackCategory FeedbackCategory { get; set; }
     }
 }

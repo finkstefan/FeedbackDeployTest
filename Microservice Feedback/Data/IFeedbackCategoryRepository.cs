@@ -20,6 +20,9 @@ namespace Microservice_Feedback.Data
             void DeleteFeedbackCategory(Guid feedbackCategoryId);
 
             bool SaveChanges();
-    
+
+            FeedbackCategory GetFeedbackCategoryByName(string name);
+
+
     }
 }

@@ -43,6 +43,10 @@ namespace Microservice_Feedback.Data
             return context.FeedbackCategories.FirstOrDefault(p => p.FeedbackCategoryId == feedbackCategoryId);
         }
 
+        public FeedbackCategory GetFeedbackCategoryByName(string name)
+        {
+            return context.FeedbackCategories.FirstOrDefault(p => p.FeedbackCategoryName == name);
+        }
         public bool SaveChanges()
         {
             return context.SaveChanges() > 0;

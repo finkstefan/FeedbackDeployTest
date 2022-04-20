@@ -14,7 +14,7 @@ namespace Microservice_Feedback.Models
         /// <summary>
         /// Feedback category ID
         /// </summary>
-        public string FeedbackCategory { get; set; }
+        public string FeedbackCategoryName { get; set; }
 
         /// <summary>
         /// Object storecheck ID

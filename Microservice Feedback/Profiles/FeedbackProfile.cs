@@ -16,6 +16,8 @@ namespace Microservice_Feedback.Profiles
             CreateMap<FeedbackDTO, Feedback>();
             CreateMap<FeedbackFrontDTO,FeedbackDTO>();
             CreateMap<FeedbackDTO, FeedbackFrontDTO>();
+            CreateMap<Feedback, FeedbackFrontDTO>();
+            CreateMap<FeedbackFrontDTO, Feedback>();
         }
     }
 }

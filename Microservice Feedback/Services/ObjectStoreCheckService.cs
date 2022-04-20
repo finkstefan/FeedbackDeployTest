@@ -21,7 +21,7 @@ namespace Microservice_Feedback.Services
         {
             using (HttpClient client = new HttpClient())
             {
-                Uri url = new Uri($"{configuration["Services:ObjectStoreCheckService"]}/api/objectStoreChecks/username/{username}");
+                Uri url = new Uri($"{configuration["Services:ObjectStoreCheckService"]}/api/objectStoreChecks/nopdf/{username}");
 
                 HttpResponseMessage response = client.GetAsync(url).Result;
 

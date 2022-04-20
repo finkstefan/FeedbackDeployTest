@@ -22,7 +22,8 @@ namespace Microservice_Feedback.Data
         public Feedback CreateFeedback(Feedback feedback)
         {
             feedback.FeedbackId = Guid.NewGuid();
-           
+            context.Feedbacks.Add(feedback);
+            context.SaveChanges();
             return feedback;
         }
 
