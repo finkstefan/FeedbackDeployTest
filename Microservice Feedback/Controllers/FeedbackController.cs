@@ -147,7 +147,7 @@ namespace Microservice_Feedback.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<FeedbackDTO> CreateFeedback(IFormFile file, [FromForm] FeedbackDTO feedbackDTO)
         {
-            //try
+            try
             {
                 logDto.HttpMethod = "POST";
                 logDto.Message = "Create new feedback";
@@ -175,13 +175,13 @@ namespace Microservice_Feedback.Controllers
                 string location = linkgenerator.GetPathByAction("GetFeedbacks", "Feedback", new { feedbackId = helper.FeedbackId });
 
                 logDto.Level = "Info";
-                //loggerService.CreateLog(logDto);
+                loggerService.CreateLog(logDto);
                 return Created(location, feedbackFrontDTO);
             }
-            //catch
+            catch
             {
                 logDto.Level = "Error";
-                //loggerService.CreateLog(logDto);
+                loggerService.CreateLog(logDto);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Create Error");
             }
         }
