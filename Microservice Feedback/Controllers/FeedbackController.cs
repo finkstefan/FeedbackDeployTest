@@ -339,7 +339,7 @@ namespace Microservice_Feedback.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<List<FeedbackDTO>> GetFeedbacksByObjectStoreCheckId(Guid objectStoreCheckId)
         {
-            try
+            //try
             {
                 logDto.HttpMethod = "GET";
                 logDto.Message = "Return all feedbacks by objectstoreCheckId";
@@ -365,7 +365,7 @@ namespace Microservice_Feedback.Controllers
                 return Ok(mapper.Map<List<FeedbackDTO>>(feedbacksDTO));
             }
 
-            catch
+            //catch
             {
                 logDto.Level = "Error";
                 loggerService.CreateLog(logDto);
