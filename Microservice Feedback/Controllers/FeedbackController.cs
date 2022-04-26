@@ -380,7 +380,7 @@ namespace Microservice_Feedback.Controllers
         /// <response code="200">Returns list of feedbacks</response>
         /// <response code="204">Nothing to return</response>
         /// <response code="505">Error in getting all feedbacks</response>
-        [HttpGet("unresolved")]
+        [HttpGet("unresolvedFeedbacks")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
