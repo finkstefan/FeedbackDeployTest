@@ -69,7 +69,7 @@ namespace Microservice_Feedback.Controllers
             {
                 logDto.Level = "Error";
                 loggerService.CreateLog(logDto);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Get all Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Get all feedbackCategory Error");
 
             }
         }
@@ -105,7 +105,7 @@ namespace Microservice_Feedback.Controllers
             {
                 logDto.Level = "Error";
                 loggerService.CreateLog(logDto);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Create Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Create feedbackCategory Error");
             }
         }
 
@@ -144,7 +144,7 @@ namespace Microservice_Feedback.Controllers
             {
                 logDto.Level = "Error";
                 loggerService.CreateLog(logDto);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Get one by id Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Get one feedbackCategory by id Error");
             }
         }
 
@@ -188,7 +188,7 @@ namespace Microservice_Feedback.Controllers
             {
                 logDto.Level = "Error";
                 loggerService.CreateLog(logDto);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Update Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Update feedbackCategory Error");
             }
         }
 
@@ -227,7 +227,7 @@ namespace Microservice_Feedback.Controllers
             {
                 logDto.Level = "Error";
                 loggerService.CreateLog(logDto);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Delete Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Delete feedbackCategory Error");
             }
         }
 

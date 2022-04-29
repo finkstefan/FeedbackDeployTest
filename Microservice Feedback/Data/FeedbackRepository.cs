@@ -41,6 +41,11 @@ namespace Microservice_Feedback.Data
         {
             return context.Feedbacks.ToList();
         }
+        public Feedback GetFeedbackByImg(string img)
+        {
+            return context.Feedbacks.FirstOrDefault(p => p.Img == img);
+        }
+
 
         public List<Feedback> GetUnresolvedFeedbacks()
         {

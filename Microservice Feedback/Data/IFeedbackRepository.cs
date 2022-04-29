@@ -25,6 +25,8 @@ namespace Microservice_Feedback.Data
         List<Feedback> GetFeedbacksByObjectStoreCheckId(Guid objectStoreCheckId);
         List<Feedback> GetUnresolvedFeedbacks();
 
+        Feedback GetFeedbackByImg(string img);
+
 
     }
 }

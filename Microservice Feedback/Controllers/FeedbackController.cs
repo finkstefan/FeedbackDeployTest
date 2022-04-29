@@ -18,7 +18,7 @@ namespace Microservice_Feedback.Controllers
 {
     [ApiController]
     [Route("api/feedbacks")]
-    [Produces("application/json", "application/xml")] 
+    [Produces("application/json", "application/xml")]
     public class FeedbackController : ControllerBase
     {
         private readonly IFeedbackRepository feedbackRepository;
@@ -30,7 +30,7 @@ namespace Microservice_Feedback.Controllers
         private readonly LogDto logDto;
         private readonly IHostingEnvironment hostingEnvironment;
 
-        public FeedbackController(IFeedbackRepository feedbackRepository, IMapper mapper, LinkGenerator linkgenerator,IFeedbackCategoryRepository feedbackCategoryRepository, ILoggerService loggerService, IObjectStoreCheckService objectStoreCheckService, IHostingEnvironment hostingEnvironment)
+        public FeedbackController(IFeedbackRepository feedbackRepository, IMapper mapper, LinkGenerator linkgenerator, IFeedbackCategoryRepository feedbackCategoryRepository, ILoggerService loggerService, IObjectStoreCheckService objectStoreCheckService, IHostingEnvironment hostingEnvironment)
         {
             this.feedbackRepository = feedbackRepository;
             this.mapper = mapper;
@@ -54,7 +54,7 @@ namespace Microservice_Feedback.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<List<FeedbackDTO>> GetFeedbacks()
+        public ActionResult<List<FeedbackFrontDTO>> GetFeedbacks()
         {
             try
             {
@@ -68,27 +68,27 @@ namespace Microservice_Feedback.Controllers
                     loggerService.CreateLog(logDto);
                     return NoContent();
                 }
-                List<FeedbackDTO> feedbacksDTO = new List<FeedbackDTO>();
+                List<FeedbackFrontDTO> feedbacksDTO = new List<FeedbackFrontDTO>();
                 foreach (Feedback feed in feedbacks)
                 {
-                    FeedbackDTO feedbackDTO = mapper.Map<FeedbackDTO>(feed);
+                    FeedbackFrontDTO feedbackDTO = mapper.Map<FeedbackFrontDTO>(feed);
                     feedbackDTO.FeedbackCategoryName = feedbackCategoryRepository.GetFeedbackCategoryById(feed.FeedbackCategoryId).FeedbackCategoryName;
 
                     feedbacksDTO.Add(feedbackDTO);
                 }
- 
+
 
 
                 logDto.Level = "Info";
                 loggerService.CreateLog(logDto);
-                return Ok(mapper.Map<List<FeedbackDTO>>(feedbacksDTO));
+                return Ok(feedbacksDTO);
             }
 
-             catch
+            catch
             {
                 logDto.Level = "Error";
                 loggerService.CreateLog(logDto);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Get all Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Get all feedback Error");
             }
         }
 
@@ -121,7 +121,7 @@ namespace Microservice_Feedback.Controllers
 
                 FeedbackDTO feedbackDTO = mapper.Map<FeedbackDTO>(feedback);
 
-                feedbackDTO.FeedbackCategoryName =feedbackCategory.FeedbackCategoryName;
+                feedbackDTO.FeedbackCategoryName = feedbackCategory.FeedbackCategoryName;
 
                 logDto.Level = "Info";
                 loggerService.CreateLog(logDto);
@@ -131,7 +131,50 @@ namespace Microservice_Feedback.Controllers
             {
                 logDto.Level = "Error";
                 loggerService.CreateLog(logDto);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Get by id Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Get feedback by id Error");
+            }
+        }
+
+        /// <summary>
+        /// Returns one feedbacks from database.
+        /// </summary>
+        /// <returns>Feedback</returns>
+        /// <response code="200">Returns one feedback</response>
+        /// <response code="404">Neither feedback has been found</response>
+        /// <response code="505">Error in getting a feedback</response>
+        [HttpGet("getOneFeedback/{Img}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<FeedbackDTO> GetOneFeedbackByImg(string img)
+        {
+            try
+            {
+                logDto.HttpMethod = "GET";
+                logDto.Message = "Return one feedback by id";
+                Feedback feedback = feedbackRepository.GetFeedbackByImg(img);
+
+                if (feedback == null)
+                {
+                    logDto.Level = "Warn";
+                    loggerService.CreateLog(logDto);
+                    return NotFound();
+                }
+                FeedbackCategory feedbackCategory = feedbackCategoryRepository.GetFeedbackCategoryById(feedback.FeedbackCategoryId);
+
+                FeedbackFrontDTO feedbackFrontDTO = mapper.Map<FeedbackFrontDTO>(feedback);
+
+                feedbackFrontDTO.FeedbackCategoryName = feedbackCategory.FeedbackCategoryName;
+
+                logDto.Level = "Info";
+                loggerService.CreateLog(logDto);
+                return Ok(feedbackFrontDTO);
+            }
+            catch
+            {
+                logDto.Level = "Error";
+                loggerService.CreateLog(logDto);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Get feedback by id Error");
             }
         }
 
@@ -169,7 +212,7 @@ namespace Microservice_Feedback.Controllers
                 Feedback feedback = mapper.Map<Feedback>(feedbackDTO);
 
                 feedback.FeedbackCategoryId = feedbackCategoryRepository.GetFeedbackCategoryByName(feedbackDTO.FeedbackCategoryName).FeedbackCategoryId;
-                
+
                 Feedback helper = feedbackRepository.CreateFeedback(feedback);
                 feedbackRepository.SaveChanges();
 
@@ -181,7 +224,7 @@ namespace Microservice_Feedback.Controllers
                 string location = linkgenerator.GetPathByAction("GetFeedbacks", "Feedback", new { feedbackId = helper.FeedbackId });
 
 
-               
+
 
                 logDto.Level = "Info";
                 loggerService.CreateLog(logDto);
@@ -191,7 +234,7 @@ namespace Microservice_Feedback.Controllers
             {
                 logDto.Level = "Error";
                 loggerService.CreateLog(logDto);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Create Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Create feedback Error");
             }
         }
 
@@ -202,17 +245,17 @@ namespace Microservice_Feedback.Controllers
         /// <response code="200">Updates feedback</response>
         /// <response code="404">Neither feedback has been found</response>
         /// <response code="500">Error in updating new feedback</response>
-        [HttpPut]
+        [HttpPut("{Img}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<FeedbackDTO> UpdateFeedback([FromBody] Feedback feedback)
+        public ActionResult<FeedbackFrontDTO> UpdateFeedback(string Img)
         {
             try
             {
                 logDto.HttpMethod = "PUT";
                 logDto.Message = "Update feedback";
-                Feedback oldFeedback = feedbackRepository.GetFeedbackById(feedback.FeedbackId);
+                Feedback oldFeedback = feedbackRepository.GetFeedbackByImg(Img);
                 if (oldFeedback == null)
                 {
                     logDto.Level = "Warn";
@@ -220,23 +263,24 @@ namespace Microservice_Feedback.Controllers
                     return NotFound();
                 }
 
-                oldFeedback.FeedbackCategoryId = feedback.FeedbackCategoryId;
-                oldFeedback.ObjectStoreCheckId = feedback.ObjectStoreCheckId;
-                oldFeedback.Text = feedback.Text;
-                oldFeedback.Date = feedback.Date;
-                oldFeedback.Resolved = feedback.Resolved;
+                oldFeedback.Resolved = true;
+
 
                 feedbackRepository.SaveChanges();
+                FeedbackFrontDTO feedbackFront = mapper.Map<FeedbackFrontDTO>(oldFeedback);
+
+                feedbackFront.FeedbackCategoryName = feedbackCategoryRepository.GetFeedbackCategoryById(oldFeedback.FeedbackCategoryId).FeedbackCategoryName;
 
                 logDto.Level = "Info";
                 loggerService.CreateLog(logDto);
-                return Ok(mapper.Map<FeedbackDTO>(oldFeedback));
+
+                return Ok(feedbackFront);
             }
             catch
             {
                 logDto.Level = "Error";
                 loggerService.CreateLog(logDto);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Update Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Update feedback Error");
             }
         }
 
@@ -274,7 +318,7 @@ namespace Microservice_Feedback.Controllers
             {
                 logDto.Level = "Error";
                 loggerService.CreateLog(logDto);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Delete Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Delete feedback Error");
             }
         }
 
@@ -321,7 +365,7 @@ namespace Microservice_Feedback.Controllers
             {
                 logDto.Level = "Error";
                 loggerService.CreateLog(logDto);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Get all Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Get feedback by category name Error");
             }
         }
 
@@ -369,7 +413,7 @@ namespace Microservice_Feedback.Controllers
             {
                 logDto.Level = "Error";
                 loggerService.CreateLog(logDto);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Get all Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Get feedback by objectstorecheck Error");
             }
         }
 
@@ -418,7 +462,7 @@ namespace Microservice_Feedback.Controllers
             {
                 logDto.Level = "Error";
                 loggerService.CreateLog(logDto);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Get all Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Get unresolver feedbacksF Error");
             }
         }
 
